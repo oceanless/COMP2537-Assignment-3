@@ -35,6 +35,7 @@ const populateTypes = async () => {
         selectedTypes.splice(index, 1);
       }
     }
+    console.log(selectedTypes);
     filterPokemons();
   });
 };
@@ -50,7 +51,7 @@ const filterPokemons = async () => {
       filteredPokemons.push(pokemon);
     }
   }
-
+  console.log(filteredPokemons);
   totalCount = filteredPokemons.length;
 
   paginate(currentPage, PAGE_SIZE, filteredPokemons, totalCount);
