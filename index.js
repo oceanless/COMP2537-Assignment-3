@@ -27,10 +27,18 @@ const updatePaginationDiv = (currentPage, numPages) => {
   }
 
   for (let i = startPage; i <= endPage; i++) {
-    $('#pagination').append(`
+    const button = $(`
       <button class="btn btn-primary page ml-1 numberedButtons" value="${i}">${i}</button>
     `);
+
+    if (i === currentPage) {
+      button.addClass('current-page');
+    }
+
+    $('#pagination').append(button);
   }
+
+
 
   if (endPage < numPages) {
     $('#pagination').append(`
