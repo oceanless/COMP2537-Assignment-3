@@ -3,6 +3,41 @@ let currentPage = 1;
 let pokemons = []
 let totalCount = 0;
 
+const populateTypes = async () => {
+  const res = await axios.get('https://pokeapi.co/api/v2/type');
+  const types = res.data.results;
+
+  const typeSelect = $('#typeSelect');
+  typeSelect.empty();
+
+  types.forEach((type) => {
+    var html = `
+      <div class="pokeTypesFilter">
+        <input id="${type.name}" class="typeFilter" type="checkbox" name="type" value="${type.name}">
+        <label htmlfor="${type.name}" for="${type.name}">
+          ${type.name}
+        </label>
+      </div>
+    `;
+
+    typeSelect.append(html);
+  });
+
+  // Add event listener to type checkboxes
+  $('.typeFilter').on('change', function() {
+    const type = $(this).val();
+    if (this.checked) {
+      selectedTypes.push(type);
+    } else {
+      const index = selectedTypes.indexOf(type);
+      if (index > -1) {
+        selectedTypes.splice(index, 1);
+      }
+    }
+    filterPokemons();
+  });
+};
+
 const updatePaginationDiv = (currentPage, numPages, totalCount) => {
   $('#pagination').empty();
 
@@ -76,6 +111,7 @@ const setup = async () => {
   pokemons = response.data.results;
   totalCount = pokemons.length;
 
+  populateTypes();
   paginate(currentPage, PAGE_SIZE, pokemons)
   const numPages = Math.ceil(totalCount / PAGE_SIZE)
   updatePaginationDiv(currentPage, numPages, totalCount)

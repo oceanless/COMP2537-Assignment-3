@@ -24,3 +24,8 @@
 .current-page {
   background-color: darkblue;
 }
+
+.pokeTypesFilter {
+  display: inline-block;
+  margin-right: 10px;
+}
