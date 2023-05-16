@@ -5,8 +5,21 @@ let pokemons = []
 const updatePaginationDiv = (currentPage, numPages) => {
   $('#pagination').empty()
 
-  const startPage = 1;
-  const endPage = numPages;
+  const maxPagesToShow = 5;
+  const numPagesEachSideOfCurrentPage = 2;
+   let startPage = currentPage - numPagesEachSideOfCurrentPage;
+   let endPage = currentPage + numPagesEachSideOfCurrentPage;
+
+   if (startPage < 1) {
+    startPage = 1;
+    endPage = maxPagesToShow;
+   }
+
+   if (endPage > numPages) {
+    endPage = 81;
+    startPage = endPage - (maxPagesToShow - 1);
+   }
+
   for (let i = startPage; i <= endPage; i++) {
     $('#pagination').append(`
     <button class="btn btn-primary page ml-1 numberedButtons" value="${i}">${i}</button>
