@@ -1,10 +1,25 @@
-const setup = async () => {
-  // test out poke api using axios here
+const PAGE_SIZE = 10
+let currentPage = 1;
+let pokemons = []
+
+const updatePaginationDiv = (currentPage, numPages) => {
+  $('#pagination').empty()
+
+  const startPage = 1;
+  const endPage = numPages;
+  for (let i = startPage; i <= endPage; i++) {
+    $('#pagination').append(`
+    <button class="btn btn-primary page ml-1 numberedButtons" value="${i}">${i}</button>
+    `)
+  }
+
+}
+
+const paginate = async (currentPage, PAGE_SIZE, pokemons) => {
+  selected_pokemons = pokemons.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
 
   $('#pokeCards').empty()
-  let response = await axios.get('https://pokeapi.co/api/v2/pokemon?offset=0&limit=810');
-  const pokemons = response.data.results;
-  pokemons.forEach(async (pokemon) => {
+  selected_pokemons.forEach(async (pokemon) => {
     const res = await axios.get(pokemon.url)
     $('#pokeCards').append(`
     <div class="pokeCard card" pokeName=${res.data.name}  >
@@ -16,6 +31,20 @@ const setup = async () => {
       </div>  
       `)
   })
+}
+
+const setup = async () => {
+  // test out poke api using axios here
+
+
+  $('#pokeCards').empty()
+  let response = await axios.get('https://pokeapi.co/api/v2/pokemon?offset=0&limit=810');
+  pokemons = response.data.results;
+
+
+  paginate(currentPage, PAGE_SIZE, pokemons)
+  const numPages = Math.ceil(pokemons.length / PAGE_SIZE)
+  updatePaginationDiv(currentPage, numPages)
 
     // pop up modal when clicking on a pokemon card
   // add event listener to each pokemon card
@@ -50,8 +79,19 @@ const setup = async () => {
         `)
     $('.modal-title').html(`
         <h2>${res.data.name.toUpperCase()}</h2>
+        <h5>${res.data.id}</h5>
         `)
   })
+
+    // add event listener to pagination buttons
+    $('body').on('click', ".numberedButtons", async function (e) {
+      currentPage = Number(e.target.value)
+      paginate(currentPage, PAGE_SIZE, pokemons)
+  
+      //update pagination buttons
+      updatePaginationDiv(currentPage, numPages)
+    })
+  
 }
 
 
