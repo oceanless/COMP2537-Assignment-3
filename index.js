@@ -38,9 +38,7 @@ const updatePaginationDiv = (currentPage, numPages) => {
     $('#pagination').append(button);
   }
 
-
-
-  if (endPage < numPages) {
+  if (currentPage < numPages) {
     $('#pagination').append(`
       <button class="btn btn-primary page ml-1 numberedButtons" value="${currentPage + 1}">&raquo;</button>
     `);
