@@ -2,6 +2,7 @@ const PAGE_SIZE = 10
 let currentPage = 1;
 let pokemons = []
 let totalCount = 0;
+let selectedTypes = [];
 
 const populateTypes = async () => {
   const res = await axios.get('https://pokeapi.co/api/v2/type');
@@ -37,6 +38,26 @@ const populateTypes = async () => {
     filterPokemons();
   });
 };
+
+const filterPokemons = async () => {
+  const filteredPokemons = [];
+
+  for (const pokemon of pokemons) {
+    const res = await axios.get(pokemon.url);
+    const types = res.data.types?.map((type) => type.type.name) || [];
+
+    if (selectedTypes.length === 0 || selectedTypes.every((type) => types.includes(type))) {
+      filteredPokemons.push(pokemon);
+    }
+  }
+
+  totalCount = filteredPokemons.length;
+
+  paginate(currentPage, PAGE_SIZE, filteredPokemons, totalCount);
+  const numPages = Math.ceil(totalCount / PAGE_SIZE);
+  updatePaginationDiv(currentPage, numPages, totalCount);
+};
+
 
 const updatePaginationDiv = (currentPage, numPages, totalCount) => {
   $('#pagination').empty();
@@ -80,7 +101,8 @@ const updatePaginationDiv = (currentPage, numPages, totalCount) => {
     `);
   }
 
-  $('#pokemonCount').html(`Showing ${PAGE_SIZE} of ${totalCount} pokemons`);
+  const numLoadedPokemons = selected_pokemons.length;
+  $('#pokemonCount').html(`Showing ${numLoadedPokemons} of ${totalCount} pokemons`);
 };
 
 
@@ -152,6 +174,7 @@ const setup = async () => {
         <h5>${res.data.id}</h5>
         `)
   })
+
 
     // add event listener to pagination buttons
     $('body').on('click', ".numberedButtons", async function (e) {
