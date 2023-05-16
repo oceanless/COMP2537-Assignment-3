@@ -21,7 +21,7 @@ const updatePaginationDiv = (currentPage, numPages, totalCount) => {
     startPage = Math.max(endPage - (maxPagesToShow - 1), 1);
   }
 
-  if (startPage > 1) {
+  if (currentPage > 1) {
     $('#pagination').append(`
       <button class="btn btn-primary page ml-1 numberedButtons" value="${currentPage - 1}">Prev</button>
     `);
