@@ -1,8 +1,9 @@
 const PAGE_SIZE = 10
 let currentPage = 1;
 let pokemons = []
+let totalCount = 0;
 
-const updatePaginationDiv = (currentPage, numPages) => {
+const updatePaginationDiv = (currentPage, numPages, totalCount) => {
   $('#pagination').empty();
 
   const maxPagesToShow = 5;
@@ -22,7 +23,7 @@ const updatePaginationDiv = (currentPage, numPages) => {
 
   if (startPage > 1) {
     $('#pagination').append(`
-      <button class="btn btn-primary page ml-1 numberedButtons" value="${currentPage - 1}">&laquo;</button>
+      <button class="btn btn-primary page ml-1 numberedButtons" value="${currentPage - 1}">Prev</button>
     `);
   }
 
@@ -40,9 +41,11 @@ const updatePaginationDiv = (currentPage, numPages) => {
 
   if (currentPage < numPages) {
     $('#pagination').append(`
-      <button class="btn btn-primary page ml-1 numberedButtons" value="${currentPage + 1}">&raquo;</button>
+      <button class="btn btn-primary page ml-1 numberedButtons" value="${currentPage + 1}">Next</button>
     `);
   }
+
+  $('#pokemonCount').html(`Showing ${PAGE_SIZE} of ${totalCount} pokemons`);
 };
 
 
@@ -71,11 +74,11 @@ const setup = async () => {
   $('#pokeCards').empty()
   let response = await axios.get('https://pokeapi.co/api/v2/pokemon?offset=0&limit=810');
   pokemons = response.data.results;
-
+  totalCount = pokemons.length;
 
   paginate(currentPage, PAGE_SIZE, pokemons)
   const numPages = Math.ceil(pokemons.length / PAGE_SIZE)
-  updatePaginationDiv(currentPage, numPages)
+  updatePaginationDiv(currentPage, numPages, totalCount)
 
     // pop up modal when clicking on a pokemon card
   // add event listener to each pokemon card
